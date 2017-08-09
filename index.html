@@ -127,6 +127,9 @@
                   return "null";
           }
           if(typeof vInput === "object") {
+              if(vInput === null) {
+					return "null";
+              }
               let sExpression = "\n"+prefix+"Json.";
               if(Array.isArray(vInput)) {
                   sExpression += "createArrayBuilder()";
