@@ -1,0 +1,79 @@
+{
+  "log": {
+    "version": "1.2",
+    "creator": {
+      "name": "WebInspector",
+      "version": "537.36"
+    },
+    "pages": [
+      {
+        "startedDateTime": "2017-08-11T14:30:41.783Z",
+        "id": "page_2",
+        "title": "https://example.com/application/index.jsf",
+        "pageTimings": {
+          "onContentLoad": 324.0340000484139,
+          "onLoad": 3451.82700001169
+        }
+      }
+    ],
+    "entries": [
+      {
+        "startedDateTime": "2017-08-11T14:30:58.685Z",
+        "time": 276.6950000077486,
+        "request": {
+          "method": "POST",
+          "url": "https://example.com/application/Agrar.svc/$batch",
+          "httpVersion": "unknown",
+          "headers": [
+            {
+              "name": "content-type",
+              "value": "multipart/mixed;boundary=batch_270b-f0a8-fded"
+            },
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ],
+          "queryString": [],
+          "cookies": [
+          ],
+          "headersSize": -1,
+          "bodySize": 3863,
+          "postData": {
+            "mimeType": "multipart/mixed;boundary=batch_270b-f0a8-fded",
+            "text": "\r\n--batch_270b-f0a8-fded\r\nContent-Type: application/http\r\nContent-Transfer-Encoding: binary\r\n\r\nGET Aussaats('5a418a05-27aa-c286-973f-1887cef498ce')/RessourceDetails?$skip=1&$top=999 HTTP/1.1\r\nsap-contextid-accept: header\r\nAccept: application/json\r\nAccept-Language: en\r\nDataServiceVersion: 2.0\r\nMaxDataServiceVersion: 2.0\r\nsap-cancel-on-close: true\r\n\r\n\r\n--batch_270b-f0a8-fded\r\nContent-Type: application/http\r\nContent-Transfer-Encoding: binary\r\n\r\nGET Einheits/$count?$filter=Visible%20eq%20true%20and%20Id%20eq%20%2737645944-f977-406f-9815-cc3d4556082a%27 HTTP/1.1\r\nsap-contextid-accept: header\r\nAccept: text/plain, */*;q=0.5\r\nAccept-Language: en\r\nDataServiceVersion: 2.0\r\nMaxDataServiceVersion: 2.0\r\nsap-cancel-on-close: true\r\n\r\n\r\n--batch_270b-f0a8-fded\r\nContent-Type: application/http\r\nContent-Transfer-Encoding: binary\r\n\r\nGET Einheits?$skip=0&$top=1000&$orderby=EinheitKategorieDetails/Id%20asc,KurzBezeichnung%20asc&$filter=Visible%20eq%20true%20and%20Id%20eq%20%2737645944-f977-406f-9815-cc3d4556082a%27 HTTP/1.1\r\nsap-contextid-accept: header\r\nAccept: application/json\r\nAccept-Language: en\r\nDataServiceVersion: 2.0\r\nMaxDataServiceVersion: 2.0\r\nsap-cancel-on-close: true\r\n\r\n\r\n--batch_270b-f0a8-fded\r\nContent-Type: application/http\r\nContent-Transfer-Encoding: binary\r\n\r\nGET Einheits/$count?$filter=Visible%20eq%20true%20and%20(EinheitKategorieDetails/Id%20eq%20%271bfcae80-42df-4f12-97ae-9803ba179d02%27%20or%20EinheitKategorieDetails/Id%20eq%20%27f6b057f9-7b3e-4787-b832-03a82aa4bce3%27) HTTP/1.1\r\nsap-contextid-accept: header\r\nAccept: text/plain, */*;q=0.5\r\nAccept-Language: en\r\nDataServiceVersion: 2.0\r\nMaxDataServiceVersion: 2.0\r\nsap-cancel-on-close: true\r\n\r\n\r\n--batch_270b-f0a8-fded\r\nContent-Type: application/http\r\nContent-Transfer-Encoding: binary\r\n\r\nGET Einheits?$skip=0&$top=1000&$orderby=EinheitKategorieDetails/Id%20asc,KurzBezeichnung%20asc&$filter=Visible%20eq%20true%20and%20(EinheitKategorieDetails/Id%20eq%20%271bfcae80-42df-4f12-97ae-9803ba179d02%27%20or%20EinheitKategorieDetails/Id%20eq%20%27f6b057f9-7b3e-4787-b832-03a82aa4bce3%27) HTTP/1.1\r\nsap-contextid-accept: header\r\nAccept: application/json\r\nAccept-Language: en\r\nDataServiceVersion: 2.0\r\nMaxDataServiceVersion: 2.0\r\nsap-cancel-on-close: true\r\n\r\n\r\n--batch_270b-f0a8-fded\r\nContent-Type: application/http\r\nContent-Transfer-Encoding: binary\r\n\r\nGET Verfahrens/$count?$filter=(Id%20eq%20%2703bd40d3-0ec4-45fe-919f-195e822ae0cf%27%20or%20Id%20eq%20%27180a675a-f9fb-443a-b7d6-9e3d548c43fa%27%20or%20Id%20eq%20%2721421809-9aa5-49c7-ac27-f2d56644e2fa%27%20or%20Id%20eq%20%278e986522-d2ad-453b-bff7-b5982edd3381%27%20or%20Id%20eq%20%27a982fdfd-1335-4912-9280-03df21fca9fb%27%20or%20Id%20eq%20%27d2b8afdb-b85e-4183-b9c2-81eb7cf53ca6%27%20or%20Id%20eq%20%27d37d827f-21c4-479d-8414-fd8e7fac5bac%27%20or%20Id%20eq%20%27f8042142-c46d-46ea-8f05-05d7aeaa6fd8%27) HTTP/1.1\r\nsap-contextid-accept: header\r\nAccept: text/plain, */*;q=0.5\r\nAccept-Language: en\r\nDataServiceVersion: 2.0\r\nMaxDataServiceVersion: 2.0\r\nsap-cancel-on-close: true\r\n\r\n\r\n--batch_270b-f0a8-fded\r\nContent-Type: application/http\r\nContent-Transfer-Encoding: binary\r\n\r\nGET Verfahrens?$skip=0&$top=1000&$orderby=Name%20asc&$filter=(Id%20eq%20%2703bd40d3-0ec4-45fe-919f-195e822ae0cf%27%20or%20Id%20eq%20%27180a675a-f9fb-443a-b7d6-9e3d548c43fa%27%20or%20Id%20eq%20%2721421809-9aa5-49c7-ac27-f2d56644e2fa%27%20or%20Id%20eq%20%278e986522-d2ad-453b-bff7-b5982edd3381%27%20or%20Id%20eq%20%27a982fdfd-1335-4912-9280-03df21fca9fb%27%20or%20Id%20eq%20%27d2b8afdb-b85e-4183-b9c2-81eb7cf53ca6%27%20or%20Id%20eq%20%27d37d827f-21c4-479d-8414-fd8e7fac5bac%27%20or%20Id%20eq%20%27f8042142-c46d-46ea-8f05-05d7aeaa6fd8%27)&$expand=Massnahmeart2VerfahrenDetails HTTP/1.1\r\nsap-contextid-accept: header\r\nAccept: application/json\r\nAccept-Language: en\r\nDataServiceVersion: 2.0\r\nMaxDataServiceVersion: 2.0\r\nsap-cancel-on-close: true\r\n\r\n\r\n--batch_270b-f0a8-fded--\r\n"
+          }
+        },
+        "response": {
+          "status": 202,
+          "statusText": "",
+          "httpVersion": "unknown",
+          "headers": [
+          ],
+          "cookies": [],
+          "content": {
+            "size": 40644,
+            "mimeType": "multipart/mixed",
+            "encoding": "base64"
+          },
+          "redirectURL": "",
+          "headersSize": -1,
+          "bodySize": -1,
+          "_transferSize": 40781
+        },
+        "cache": {},
+        "timings": {
+          "blocked": 1.34600000455976,
+          "dns": -1,
+          "connect": -1,
+          "send": 3.0280000064522,
+          "wait": 258.01900005899404,
+          "receive": 14.301999937742607,
+          "ssl": -1
+        },
+        "serverIPAddress": "54.93.50.215",
+        "connection": "115861",
+        "pageref": "page_2"
+      }]
+  }
+} 

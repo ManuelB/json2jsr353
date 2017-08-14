@@ -1,168 +1,127 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8">
+    <meta charset="utf-8">
 
-  <title>JSON to javax.json.Json Builder Java Code Converter</title>
-  <meta name="description" content="This website creates javax.json.Json codei (JSR-353) from a JSON Input">
-  <meta name="author" content="Manuel Blechschmidt">
+    <title>JSON to javax.json.Json Builder Java Code Converter</title>
+    <meta name="description" content="This website creates javax.json.Json codei (JSR-353) from a JSON Input">
+    <meta name="author" content="Manuel Blechschmidt">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-  <style type="text/css">
-      @import url('https://fonts.googleapis.com/css?family=Roboto');
-      @import url('https://fonts.googleapis.com/css?family=Pacifico');
-      html, body {
-          width: 100%;
-          height: 100%;
-          margin: 0;
-          font-family: 'Roboto', sans-serif;
-          text-align: center;
-      }
-      body {
-          background-color: #fff; 
-          background-image: 
-              linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
-              linear-gradient(#eee .1em, transparent .1em);
-          background-size: 100% 1.2em;
-      }
-      @media (min-width: 40em) {
-          #container {
-              display: grid;
-              text-align: left;
-              background-color: #fff;
-              box-shadow: 0 0 3rem rgba(0,0,0, 1);
-              align-content: center;
-              margin: 20vh 0;
-              height: 60vh;
-              grid-column-gap: 2em;
-              grid-row-gap: 2em;
-              padding: 0 2em;
-              grid-template-columns: auto auto;
-              grid-template-rows: 4em 2em 20em 4em;
-              grid-template-areas:
-                  "header header"
-                  "error error"
-                  "input output"
-                  "controls controls";
-          }
-      }
-      h1 {
-          grid-area: header;
-          text-align: center;
-          font-family: 'Pacifico';
-          font-weight: normal;
-      }
-      .error {
-          grid-area: error;
-          justify-self: center;
-          color: #ff0000;
-      }
-      .input-group {
-          grid-area: input;
-      }
-      .output-group {
-          grid-area: output;
-      }
-      textarea {
-          width: 100%;
-          height: 19em;
-      }
-      button[type="submit"] {
-          grid-area: controls;
-          justify-self: center;
-          align-self: center;
-          margin-bottom: 3em;
-      }
-
-      button {
-          display: inline-block;
-          background-color: transparent;
-          padding: 0;
-          border: 0;
-          border-radius: 1em;
-          box-shadow: 0 0.5em 0 #c5376d, 0 0.7em 1.3em rgba(0, 0, 0, .35);
-          transition: box-shadow .1s ease-in-out;
-          font-size: 120%;
-          color: #fff;
-      }
-
-      button span {
-          display: inline-block;
-          padding: 1em 1.5em;
-          background-color: #ec528d;
-          background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(hsla(338, 90%, 80%, .8)), to(hsla(338, 90%, 70%, .2)));
-          background-image: -webkit-linear-gradient(hsla(338, 90%, 80%, .8), hsla(338, 90%, 70%, .2));
-          background-image: -moz-linear-gradient(hsla(338, 90%, 80%, .8), hsla(338, 90%, 70%, .2));
-          background-image: -o-linear-gradient(hsla(338, 90%, 80%, .8), hsla(338, 90%, 70%, .2));
-          border-radius: 1em;
-          box-shadow: inset 0 -1px 1px rgba(255, 255, 255, .15);
-          font-family: 'Pacifico', Arial, sans-serif;
-          line-height: 1;
-          text-shadow: 0 -1px 1px rgba(175, 49, 95, .7);
-          transition: background-color .2s ease-in-out, transform .1s ease-in-out;
-      }
-
-      button:hover span {
-          background-color: #ec6a9c;
-          text-shadow: 0 -1px 1px rgba(175, 49, 95, .9), 0 0 5px rgba(255, 255, 255, .8);
-      }
-
-      button:active, button:focus {
-          box-shadow:    0 0.5em 0 #c5376d, 0 12px 10px rgba(0, 0, 0, .3);
-      }
-
-      button:active span {
-          transform: translate(0, 4px);
-      }
-  </style>
-  <script type="text/javascript">
-      function convertJSON2Java(vInput, prefix) {
-          switch(typeof vInput) {
-              case "string":
-                  return "\""+vInput+"\"";
-              case "number":
-                  return vInput;
-              case "boolean":
-                  return vInput ? "true" : "false";
-              case "undefined":
-                  return "null";
-          }
-          if(typeof vInput === "object") {
-              if(vInput === null) {
-					return "null";
-              }
-              let sExpression = "\n"+prefix+"Json.";
-              if(Array.isArray(vInput)) {
-                  sExpression += "createArrayBuilder()";
-                  if(vInput.length > 0) {
-                      sExpression += ".add("+vInput.map(function (o) { return convertJSON2Java(o, prefix+"    "); }).join(").add(")+")";
-                  }
-                  sExpression += ".build()\n";
-              } else {
-                  sExpression += "createObjectBuilder()";
-                  if(Object.keys(vInput).length > 0) {
-                      sExpression += ".add("+Object.keys(vInput).map(function (key) { return "\""+key+"\", "+convertJSON2Java(vInput[key], prefix+"    "); }).join(").add(")+")";
-                  } 
-                  sExpression += ".build()\n";
-              }
-              return sExpression+prefix.replace(/    /, "");
-          }
-          console.warning("Unexpected type supplied to convertJSON2Java: "+(typeof vInput));
-          return "null";
-      }
-      function convertJSON2JavaSubmit() {
-          document.getElementById("error").innerHTML = "";
-          let sInput = document.getElementById("input").value;
-          try {
-              let oInput = JSON.parse(sInput);
-              let sOutput = convertJSON2Java(oInput, "");
-              document.getElementById("output").value = sOutput;
-          } catch(e) {
-              document.getElementById("error").innerHTML = e.message;
-          }
-          // do not submit the form
-          return false;
-      }
-  </script>
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css?family=Roboto');
+        @import url('https://fonts.googleapis.com/css?family=Pacifico');
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+        }
+        
+        body {
+            background-color: #fff;
+            background-image: linear-gradient(90deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px), linear-gradient(#eee .1em, transparent .1em);
+            background-size: 100% 1.2em;
+        }
+        
+        @media (min-width: 40em) {
+            #container {
+                display: grid;
+                text-align: left;
+                background-color: #fff;
+                box-shadow: 0 0 3rem rgba(0, 0, 0, 1);
+                align-content: center;
+                margin: 20vh 0;
+                height: 60vh;
+                grid-column-gap: 2em;
+                grid-row-gap: 2em;
+                padding: 0 2em;
+                grid-template-columns: auto auto;
+                grid-template-rows: 4em 2em 20em 4em;
+                grid-template-areas: "header header" "error error" "input output" "controls controls";
+            }
+        }
+        
+        h1 {
+            grid-area: header;
+            text-align: center;
+            font-family: 'Pacifico';
+            font-weight: normal;
+        }
+        
+        .error {
+            grid-area: error;
+            justify-self: center;
+            color: #ff0000;
+        }
+        
+        .input-group {
+            grid-area: input;
+        }
+        
+        .output-group {
+            grid-area: output;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 19em;
+        }
+        
+        button[type="submit"] {
+            grid-area: controls;
+            justify-self: center;
+            align-self: center;
+            margin-bottom: 3em;
+        }
+        
+        button {
+            display: inline-block;
+            background-color: transparent;
+            padding: 0;
+            border: 0;
+            border-radius: 1em;
+            box-shadow: 0 0.5em 0 #c5376d, 0 0.7em 1.3em rgba(0, 0, 0, .35);
+            transition: box-shadow .1s ease-in-out;
+            font-size: 120%;
+            color: #fff;
+        }
+        
+        button span {
+            display: inline-block;
+            padding: 1em 1.5em;
+            background-color: #ec528d;
+            background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(hsla(338, 90%, 80%, .8)), to(hsla(338, 90%, 70%, .2)));
+            background-image: -webkit-linear-gradient(hsla(338, 90%, 80%, .8), hsla(338, 90%, 70%, .2));
+            background-image: -moz-linear-gradient(hsla(338, 90%, 80%, .8), hsla(338, 90%, 70%, .2));
+            background-image: -o-linear-gradient(hsla(338, 90%, 80%, .8), hsla(338, 90%, 70%, .2));
+            border-radius: 1em;
+            box-shadow: inset 0 -1px 1px rgba(255, 255, 255, .15);
+            font-family: 'Pacifico', Arial, sans-serif;
+            line-height: 1;
+            text-shadow: 0 -1px 1px rgba(175, 49, 95, .7);
+            transition: background-color .2s ease-in-out, transform .1s ease-in-out;
+        }
+        
+        button:hover span {
+            background-color: #ec6a9c;
+            text-shadow: 0 -1px 1px rgba(175, 49, 95, .9), 0 0 5px rgba(255, 255, 255, .8);
+        }
+        
+        button:active,
+        button:focus {
+            box-shadow: 0 0.5em 0 #c5376d, 0 12px 10px rgba(0, 0, 0, .3);
+        }
+        
+        button:active span {
+            transform: translate(0, 4px);
+        }
+    </style>
+    <script type="text/javascript" src="js/JSON2JSR353.js">
+    </script>
 </head>
 <!--
 
@@ -193,18 +152,20 @@ Json.createObjectBuilder().add("one", 1).add("two",
 -->
 
 <body>
-   <form id="container" onsubmit="return convertJSON2JavaSubmit();">
-       <h1>Convert JSON to JSR 353 compliant Java Code</h1>
-       <strong class="error" id="error"></strong>
-       <div class="input-group textarea-group">
-           <label for="input">Input JSON</label><br />
-           <textarea id="input" placeholder='{"one" : 1, "two" : ["two-one", "two-two"] }'></textarea>
-       </div>
-       <div class="output-group textarea-group">
-           <label for="output">Output <a href="https://docs.oracle.com/javaee/7/api/index.html?javax/json/Json.html" target="_blank">javax.json.Json</a> <a href="https://jcp.org/en/jsr/detail?id=353" target="_blank">JSR-353</a> Java</label><br />
-           <textarea id="output" placeholder='Json.createObjectBuilder().add("one", 1).add("two", Json.createArrayBuilder().add("two-one").add("two-two").build()).build();'></textarea>
-       </div>
-       <button type="submit"><span>Convert JSON to Java</span></button>
-   </form>
+    <form id="container" onsubmit="return new JSON2JSR353().convertJSON2JavaSubmit();">
+        <h1>Convert JSON and JSON <a href="https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/HAR/Overview.html" target="_blank">HAR</a> to JSR 353 &amp; 339 compliant Java Code</h1>
+        <strong class="error" id="error"></strong>
+        <div class="input-group textarea-group">
+            <label for="input">Input JSON</label><br />
+            <textarea id="input" placeholder='{"one" : 1, "two" : ["two-one", "two-two"] }'></textarea>
+        </div>
+        <div class="output-group textarea-group">
+            <label for="output">Output <a href="https://docs.oracle.com/javaee/7/api/index.html?javax/json/Json.html" target="_blank">javax.json.Json</a> <a href="https://jcp.org/en/jsr/detail?id=353" target="_blank">JSR-353</a> and <a href="https://jcp.org/en/jsr/detail?id=339" target="_blank">JSR-339 JAX RS</a> Client Java</label><br
+            />
+            <textarea id="output" placeholder='Json.createObjectBuilder().add("one", 1).add("two", Json.createArrayBuilder().add("two-one").add("two-two").build()).build();'></textarea>
+        </div>
+        <button type="submit"><span>Convert JSON to Java</span></button>
+    </form>
 </body>
-</html>    
+
+</html>
