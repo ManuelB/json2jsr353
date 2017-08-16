@@ -148,14 +148,24 @@ JSON2JSR353.prototype.convertHAR2Java = function(oInput) {
         "Content-Type": true,
         "content-type": true
     };
-    let sOutput = "Client client = ClientBuilder.newClient();\n";
-    sOutput += "client.register(new LoggingFilter(Logger.getLogger(LoggingFilter.class.getName()), true));\n";
+    let sOutput = "import static org.junit.Assert.assertEquals;\nimport org.junit.Test;\n\nimport javax.ws.rs.client.Client;\nimport javax.ws.rs.client.ClientBuilder;\nimport javax.ws.rs.client.Entity;\nimport javax.ws.rs.core.Response;\n\nimport javax.json.Json;\nimport javax.json.JsonObject;\nimport javax.json.JsonValue;\n\nimport org.glassfish.jersey.filter.LoggingFilter;\n\nimport java.util.UUID;\nimport java.util.logging.Logger;\n\npublic class HARRequestExecuterTest {\n";
+    sOutput += "\tpublic static Client client() {\n"
+    sOutput += "\t\tClient client = ClientBuilder.newClient();\n";
+    sOutput += "\t\tclient.register(new LoggingFilter(Logger.getLogger(LoggingFilter.class.getName()), true));\n";
+    sOutput += "\t\treturn client;\n";
+    sOutput += "\t}\n\n";
     let sPostDataDefinition = "";
+    let aFunctionCalls = [];
     for (let i in oInput.log.entries) {
+        let sFunctionName = "executeRequest" + i;
+        aFunctionCalls.push(sFunctionName);
+        sOutput += "\tpublic static void " + sFunctionName + "() {\n";
+        sOutput += "\t\tClient client = client();\n";
         let oRequest = oInput.log.entries[i].request;
+        let oResponse = oInput.log.entries[i].response;
         let anchor = document.createElement("a");
         anchor.href = oRequest.url;
-        let sRequestOutput = "client.target(\"" + anchor.protocol + "//" + anchor.host + "\").path(\"" + anchor.pathname + "\")";
+        let sRequestOutput = "\t\tResponse response = client.target(\"" + anchor.protocol + "//" + anchor.host + "\").path(\"" + anchor.pathname + "\")";
         if (anchor.search) {
             let sSearch = anchor.search;
             // cut ? 
@@ -181,11 +191,11 @@ JSON2JSR353.prototype.convertHAR2Java = function(oInput) {
             sRequestOutput += ".post(";
             if (oRequest.postData.mimeType === "application/json") {
                 sRequestOutput += "Entity.json(";
-                sPostDataDefinition = "JsonObject postData" + i + " = " + this.convertJSON2Java(JSON.parse(oRequest.postData.text), "") + ";";
+                sPostDataDefinition = "JsonObject postData" + i + " = " + this.convertJSON2Java(JSON.parse(oRequest.postData.text), "").replace(/\n/g, "\n\t\t") + ";";
                 sRequestOutput += "postData" + i + ")";
             } else if (oRequest.postData.mimeType.match(/multipart\/mixed;\s*boundary=(.*)$/)) {
                 sRequestOutput += "Entity.text(";
-                sPostDataDefinition = this.convertMultiPartBoundary2JavaString(oRequest.postData.text, RegExp.$1, i, "");
+                sPostDataDefinition = "\t\t" + this.convertMultiPartBoundary2JavaString(oRequest.postData.text, RegExp.$1, i, "").replace(/\n/g, "\n\t\t");
                 sRequestOutput += "postData" + i;
                 sRequestOutput += ")";
             } else {
@@ -195,9 +205,31 @@ JSON2JSR353.prototype.convertHAR2Java = function(oInput) {
             }
             sRequestOutput += ");\n";
         }
-        sOutput += sPostDataDefinition + "\n" + sRequestOutput;
+
+        sOutput += this.replaceUUIDsWithVariables(sPostDataDefinition) + "\n" + sRequestOutput + "\n";
+        sOutput += "\t\tassertEquals(" + oResponse.status + ", response.getStatus());\n";
+        sOutput += "\t}\n";
     }
+    sOutput += "\t@Test\n\tpublic void test() {\n\t\tmain(null);\n\t}\n\tpublic static void main(String[] args) {\n\t\t" + aFunctionCalls.join("();\n\t\t") + "();\n\t}\n";
+    sOutput += "}";
+
     return sOutput;
+};
+/**
+ * Replaces all UUIDs in the given String with variable literals
+ * and adds the variables at the beginning.
+ * @param {string} sPostDataDefinition
+ */
+JSON2JSR353.prototype.replaceUUIDsWithVariables = function(sPostDataDefinition) {
+    let aUniqueUUIDs = Array.from(new Set(sPostDataDefinition.match(/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/g)));
+    let aUUIDDefinition = [];
+    let iCount = 1;
+    for (let sUUID of aUniqueUUIDs) {
+        aUUIDDefinition.push("String uuid" + iCount + " = UUID.randomUUID().toString();");
+        sPostDataDefinition = sPostDataDefinition.replace(new RegExp(sUUID, 'g'), "\"+uuid" + iCount + "+\"");
+        iCount++;
+    }
+    return "\t\t" + aUUIDDefinition.join("\n\t\t") + "\n" + sPostDataDefinition;
 };
 /**
  * Encodes the given string as a string that can be used
