@@ -170,7 +170,7 @@ JSON2JSR353.prototype.convertHAR2Java = function(oInput) {
         if (anchor.search) {
             let sSearch = anchor.search;
             // cut ? 
-            sSearch = sSearch.substr(0, sSearch.length - 1);
+            sSearch = sSearch.substr(1, sSearch.length - 1);
             sRequestOutput += ".queryParam(" + sSearch.split(/&/).map(function(sParamPair) {
                     return sParamPair.split(/=/)
                 })
