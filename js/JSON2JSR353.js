@@ -104,12 +104,12 @@ JSON2JSR353.prototype.convertMultiPartBoundary2JavaString = function(sMultipartB
     // Remove last element
     aPostParts.pop();
     for (let k in aPostParts) {
-        sPostDataDefinition += "postData" + sPrefix + i + " += \"--" + this.escapeStringAsJavaVariable(sBoundary, false) + "\";\n";
+        sPostDataDefinition += "postData" + sPrefix + i + " += \"\\r\\n--" + this.escapeStringAsJavaVariable(sBoundary, false) + "\";\n";
         let sBatchRequest = aPostParts[k];
         let aBatchRequestParts = sBatchRequest.split(/\r\n\r\n/);
         let sHeaderOne = aBatchRequestParts.shift();
         let sContent = aBatchRequestParts.join("\r\n\r\n");
-        sPostDataDefinition += "postData" + sPrefix + i + " += " + this.escapeStringAsJavaVariable(sHeaderOne) + ";\n";
+        sPostDataDefinition += "postData" + sPrefix + i + " += " + this.escapeStringAsJavaVariable(sHeaderOne + "\r\n\r\n") + ";\n";
         if (sHeaderOne.match(/Content-Type: application\/http/)) {
             aBatchRequestParts = sContent.split(/\r\n\r\n/);
             // GET Verfahrens/$count HTTP/1.1
@@ -119,7 +119,7 @@ JSON2JSR353.prototype.convertMultiPartBoundary2JavaString = function(sMultipartB
             // DataServiceVersion: 2.0
             // MaxDataServiceVersion: 2.0
             // sap-cancel-on-close: true
-            sPostDataDefinition += "postData" + sPrefix + i + " += " + this.escapeStringAsJavaVariable(aBatchRequestParts[0].replace(/Content-Length: \d+$/, "")) + ";\n";
+            sPostDataDefinition += "postData" + sPrefix + i + " += " + this.escapeStringAsJavaVariable(aBatchRequestParts[0].replace(/Content-Length: \d+$/, "") + "\r\n") + ";\n";
             if (aBatchRequestParts[0].match(/Content-Type: application\/json/)) {
                 sPostDataDefinition += "JsonObject postData" + sPrefix + i + "_" + k + " = " + this.convertJSON2Java(JSON.parse(aBatchRequestParts[1]), "") + ";\n";
                 sPostDataDefinition += "postData" + sPrefix + i + " += postData" + sPrefix + i + "_" + k + ".toString();\n";
@@ -133,6 +133,7 @@ JSON2JSR353.prototype.convertMultiPartBoundary2JavaString = function(sMultipartB
             sPostDataDefinition += "postData" + i + " += " + this.escapeStringAsJavaVariable(sContent) + ";\n";
         }
     }
+    sPostDataDefinition += "postData" + sPrefix + i + " += \"\\r\\n--" + this.escapeStringAsJavaVariable(sBoundary, false) + "--\\r\\n\";\n";
     return sPostDataDefinition;
 };
 /**
@@ -194,14 +195,14 @@ JSON2JSR353.prototype.convertHAR2Java = function(oInput) {
                 sPostDataDefinition = "JsonObject postData" + i + " = " + this.convertJSON2Java(JSON.parse(oRequest.postData.text), "").replace(/\n/g, "\n\t\t") + ";";
                 sRequestOutput += "postData" + i + ")";
             } else if (oRequest.postData.mimeType.match(/multipart\/mixed;\s*boundary=(.*)$/)) {
-                sRequestOutput += "Entity.text(";
+                sRequestOutput += "Entity.entity(";
                 sPostDataDefinition = "\t\t" + this.convertMultiPartBoundary2JavaString(oRequest.postData.text, RegExp.$1, i, "").replace(/\n/g, "\n\t\t");
                 sRequestOutput += "postData" + i;
-                sRequestOutput += ")";
+                sRequestOutput += ", \"" + oRequest.postData.mimeType + "\")";
             } else {
-                sRequestOutput += "Entity.text(\"";
+                sRequestOutput += "Entity.entity(\"";
                 sRequestOutput += oRequest.postData.text;
-                sRequestOutput += "\")";
+                sRequestOutput += "\", \"" + oRequest.postData.mimeType + "\")";
             }
             sRequestOutput += ");\n";
         }
@@ -225,7 +226,7 @@ JSON2JSR353.prototype.replaceUUIDsWithVariables = function(sPostDataDefinition) 
     let aUUIDDefinition = [];
     let iCount = 1;
     for (let sUUID of aUniqueUUIDs) {
-        aUUIDDefinition.push("String uuid" + iCount + " = UUID.randomUUID().toString();");
+        aUUIDDefinition.push("String uuid" + iCount + " = UUID.randomUUID().toString(); // \"" + sUUID + "\";");
         sPostDataDefinition = sPostDataDefinition.replace(new RegExp(sUUID, 'g'), "\"+uuid" + iCount + "+\"");
         iCount++;
     }
